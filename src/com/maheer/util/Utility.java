@@ -6,7 +6,7 @@ import java.awt.Color;
 
 public class Utility {
 
-    public static Color addValueToAllChannels(Color color, int value) {	// XXX es gäbe eine Methode brighter() auf color
+    public static Color addValueToAllChannels(Color color, int value) {
 
         int red = truncateToBounds(color.getRed() + value);
         int green = truncateToBounds(color.getGreen() + value);

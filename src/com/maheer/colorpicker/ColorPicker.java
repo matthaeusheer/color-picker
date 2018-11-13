@@ -2,45 +2,50 @@ package com.maheer.colorpicker;
 
 import com.maheer.components.*;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
-import java.awt.*;
 
 
-public class ColorPicker{
+
+@SuppressWarnings("serial")
+public class ColorPicker extends JFrame{
 
     public static final Color INIT_COLOR = new Color(212,175,55);
     public static final int WIDTH = 600;
     public static final int HEIGHT = 500;
 
     public ColorPicker() {
-        JFrame frame = setupFrame();
+    	super("Mat's Color Picker");
+        setupFrame();
 
         ColorModel colorModel = new ColorModel(INIT_COLOR);
-        setupPanels(frame, colorModel);
+        setupPanels(colorModel);
         
-        frame.pack();    
-        frame.setVisible(true);
+        pack();    
+        setVisible(true);
     }
 
-    private JFrame setupFrame() {
-        JFrame frame = new JFrame("Mat's Color Picker");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        frame.setLayout(new BorderLayout());
-
-        return frame;
+    private void setupFrame() {
+        setResizable(false);
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        setLayout(new BorderLayout());
     }
 
     /**
      * Sets up all the panels and components.
      * TODO: This should be nicely done in a PanelManager class or so. However it's not central to the assignment.
      */
-    private void setupPanels(JFrame frame, ColorModel colorModel) {
+    private void setupPanels(ColorModel colorModel) {
         JPanel mainPanel = new JPanel(new BorderLayout());
-        frame.add(mainPanel, BorderLayout.CENTER);
+        add(mainPanel, BorderLayout.CENTER);
 
         mainPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10, 10, 10, 10), new EtchedBorder()));
 
