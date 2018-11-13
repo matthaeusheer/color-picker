@@ -16,12 +16,12 @@ public class ColorPicker{
 
     public ColorPicker() {
         JFrame frame = setupFrame();
-        frame.setLayout(new BorderLayout());	// XXX wieso wird dies nicht auch in setupFrame gemacht?
 
         ColorModel colorModel = new ColorModel(INIT_COLOR);
-
         setupPanels(frame, colorModel);
-        frame.pack();
+        
+        frame.pack();    
+        frame.setVisible(true);
     }
 
     private JFrame setupFrame() {
@@ -29,7 +29,8 @@ public class ColorPicker{
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        frame.setVisible(true);	// XXX ich würde es erst am Ende anzeigen wenn alle Controls registriert sind
+        frame.setLayout(new BorderLayout());
+
         return frame;
     }
 
@@ -57,9 +58,9 @@ public class ColorPicker{
         // Add RGB scroll bars
         JPanel sliderPanel = new JPanel(new GridLayout(3, 1));
         northPanel.add(sliderPanel, BorderLayout.WEST);
-        ScrollBar scrollBarR = new ScrollBar(colorModel, ColorModel.rgbType.R, "redSlider", 0, INIT_COLOR.getRed());
-        ScrollBar scrollBarG = new ScrollBar(colorModel, ColorModel.rgbType.G, "greenSlider", 0, INIT_COLOR.getGreen());
-        ScrollBar scrollBarB = new ScrollBar(colorModel, ColorModel.rgbType.B, "blueSlider", 0, INIT_COLOR.getBlue());
+        ScrollBar scrollBarR = new ScrollBar(colorModel, ColorModel.RgbType.R, 0, INIT_COLOR.getRed());
+        ScrollBar scrollBarG = new ScrollBar(colorModel, ColorModel.RgbType.G, 0, INIT_COLOR.getGreen());
+        ScrollBar scrollBarB = new ScrollBar(colorModel, ColorModel.RgbType.B, 0, INIT_COLOR.getBlue());
         scrollBarR.setPreferredSize(new Dimension(WIDTH / 2, HEIGHT / 2 /  3 / 2));
         scrollBarG.setPreferredSize(new Dimension(WIDTH / 2, HEIGHT / 2 /  3 / 2));
         scrollBarB.setPreferredSize(new Dimension(WIDTH / 2, HEIGHT / 2 /  3 / 2));
@@ -70,9 +71,9 @@ public class ColorPicker{
         // Add text fields and hex text field listeners
         JPanel rgbTextBoxesPanel = new JPanel(new GridLayout(3, 2));
         northPanel.add(rgbTextBoxesPanel, BorderLayout.CENTER);
-        RgbTextField rTextField = new RgbTextField(colorModel, ColorModel.rgbType.R, INIT_COLOR.getRed());
-        RgbTextField gTextField = new RgbTextField(colorModel, ColorModel.rgbType.G, INIT_COLOR.getGreen());
-        RgbTextField bTextField = new RgbTextField(colorModel, ColorModel.rgbType.B, INIT_COLOR.getBlue());
+        RgbTextField rTextField = new RgbTextField(colorModel, ColorModel.RgbType.R, INIT_COLOR.getRed());
+        RgbTextField gTextField = new RgbTextField(colorModel, ColorModel.RgbType.G, INIT_COLOR.getGreen());
+        RgbTextField bTextField = new RgbTextField(colorModel, ColorModel.RgbType.B, INIT_COLOR.getBlue());
         HexTextField rHexField = new HexTextField(rTextField);
         HexTextField gHexField = new HexTextField(gTextField);
         HexTextField bHexField = new HexTextField(bTextField);

@@ -1,24 +1,25 @@
 package com.maheer.components;
 
 import com.maheer.colorpicker.ColorModel;
+import com.maheer.colorpicker.ColorModel.RgbType;
 
-import javax.swing.*;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 
-public class ScrollBar extends JScrollBar implements AdjustmentListener, ColorListener {
+import javax.swing.JScrollBar;
 
-    private String name;
+@SuppressWarnings("serial")
+public class ScrollBar extends JScrollBar implements AdjustmentListener, ChannelListener {
+
     private ColorModel model;
-    private ColorModel.rgbType rgbType;
+    private ColorModel.RgbType rgbType;
 
-    public ScrollBar(ColorModel model, ColorModel.rgbType rgbType, String name, int orientation, int val) {
+    public ScrollBar(ColorModel model, ColorModel.RgbType rgbType, int orientation, int val) {
         super(orientation, val, 0, 0, 255);
         this.model = model;
         this.rgbType = rgbType;
-        this.name = name;
         addAdjustmentListener(this);
-        model.addColorListener(this);
+        model.addChannelListener(this, rgbType);
     }
 
     @Override
@@ -28,8 +29,12 @@ public class ScrollBar extends JScrollBar implements AdjustmentListener, ColorLi
     }
 
     @Override
-    public void colorValueChanged(int newColorVal, ColorModel.rgbType rgbType) {
-        if (rgbType == this.rgbType)
-            setValue(newColorVal);
+    public void colorValueChanged(int newColorVal) {
+    	setValue(newColorVal);
     }
+
+	@Override
+	public RgbType getType() {
+		return rgbType;
+	}
 }

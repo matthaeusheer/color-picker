@@ -8,13 +8,13 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class BrightnessButton extends JButton implements ActionListener {
+@SuppressWarnings("serial")
+public class BrightnessButton extends JButton implements ActionListener, ColorListener {
 
     private final int BRIGHTNESS_STEP = 10;
-    private String label;
-    private Color buttonColor;
     private ColorModel model;
     private brightnessDirection direction;
+    private boolean isEnabled;
 
     public enum brightnessDirection {
         BRIGHTER, DARKER;
@@ -22,18 +22,15 @@ public class BrightnessButton extends JButton implements ActionListener {
 
     public BrightnessButton(String label, Color buttonColor, ColorModel model, brightnessDirection direction) {
         super(label);
-        this.label = label;
-        this.buttonColor = buttonColor;
         this.model = model;
         this.direction = direction;
+        model.addColorListener(this);
         addActionListener(this);
         setBackground(buttonColor);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("Made the image: " + label.toLowerCase());
-
         if (direction == brightnessDirection.BRIGHTER) {
             model.setColor(Utility.addValueToAllChannels(model.getColor(), BRIGHTNESS_STEP));
         } else if (direction == brightnessDirection.DARKER) {
@@ -42,4 +39,19 @@ public class BrightnessButton extends JButton implements ActionListener {
             throw new IllegalArgumentException("Only brighter / darker directions allowed.");
         }
     }
+
+	@Override
+	public void colorValueChanged(Color newColor) {
+		isEnabled = true;
+		if (direction.equals(brightnessDirection.BRIGHTER) && newColor.equals(Color.WHITE)) {
+			isEnabled = false;
+		}
+		
+		if (direction.equals(brightnessDirection.DARKER) && newColor.equals(Color.BLACK)) {
+			isEnabled = false;
+		}
+
+		setEnabled(isEnabled);
+		
+	}
 }

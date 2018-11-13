@@ -2,23 +2,25 @@ package com.maheer.components;
 
 import com.maheer.colorpicker.ColorModel;
 
-import javax.swing.*;
 import java.awt.event.ActionListener;
+import javax.swing.JTextField;
 
-abstract class AbstractTextField extends JTextField implements ColorListener, ActionListener {
 
-    private final ColorModel.rgbType type;
+@SuppressWarnings("serial")
+abstract class AbstractTextField extends JTextField implements ChannelListener, ActionListener {
+
+    private final ColorModel.RgbType type;
     private int colorValue;
     private final ColorModel model;
 
-    public AbstractTextField(ColorModel model, ColorModel.rgbType type,int colorValue) {
+    public AbstractTextField(ColorModel model, ColorModel.RgbType type, int colorValue) {
         this.type = type;
         this.model = model;
         this.colorValue = colorValue;
-        model.addColorListener(this);
+        model.addChannelListener(this, type);
     }
 
-    public ColorModel.rgbType getType() {
+    public ColorModel.RgbType getType() {
         return type;
     }
 

@@ -1,60 +1,87 @@
 package com.maheer.colorpicker;
 
+import com.maheer.components.ChannelListener;
 import com.maheer.components.ColorListener;
 
 import java.awt.Color;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+
 public class ColorModel {
 
     private Color color;
-    private List<ColorListener> listeners = new LinkedList<>();	// XXX diese Liste könnte final deklariert werden.
+    private final List<ColorListener> colorListeners = new LinkedList<>();
+    private final EnumMap<RgbType, List<ChannelListener>> channelListeners = new EnumMap<>(RgbType.class);
 
     public static final int MAX_COL_VAL = 255;
     public static final int MIN_COL_VAL = 0;
-    public enum rgbType {	// XXX Typnamen starten typischerweise mit Grossbuchstaben
+    public enum RgbType {
         R, G, B;
     }
 
     public ColorModel(Color initColor) {
         this.color = initColor;
+        
+        // Initialize the channelListener lists inside the EnumMap.
+        for (RgbType type : RgbType.values()) {
+        	channelListeners.put(type, new LinkedList<>());
+        }
+    }
+    
+    public void addChannelListener(ChannelListener listener, RgbType type) {
+    	channelListeners.get(type).add(listener);
+    	}
+    
+    public void removeChannelListener(ChannelListener listener, RgbType type) {
+    	channelListeners.get(type).remove(listener);
     }
 
     public void addColorListener(ColorListener listener) {
-        listeners.add(listener);
+        colorListeners.add(listener);
     }
 
     public void removeColorListener(ColorListener listener) {
-        listeners.remove(listener);
+        colorListeners.remove(listener);
     }
 
     public void setColor(Color newColor) {
         if (!newColor.equals(this.color)) {
-            Map<rgbType, Integer> changedValues = changedRgbTypes(color, newColor);
+        
+            notifyListeners(newColor);
             this.color = newColor;
-            for (ColorListener listener : listeners) {
-                for (Map.Entry<rgbType, Integer> typeColorPair : changedValues.entrySet()) {
-                	// XXX OK. Schön wäre noch wenn sich ein Listener nur für einen Farbkanal registrieren könnte.
-                    listener.colorValueChanged(typeColorPair.getValue(), typeColorPair.getKey());
-
-                }
+        }
+    }
+    
+    private void notifyListeners(Color newColor) {
+    	
+    	// Notify listeners who registered as complete color listeners (receive the full color upon change).
+    	for (ColorListener colorListener : colorListeners) {
+        	colorListener.colorValueChanged(newColor);
+        }
+        
+    	// Notify listeners who registered only to a single color channel.
+        Map<RgbType, Integer> changedValues = changedRgbTypes(color, newColor);
+        
+        for (Map.Entry<RgbType, Integer> typeColorPair : changedValues.entrySet()) {
+        
+            for (ChannelListener channelListener : channelListeners.get(typeColorPair.getKey())) {
+                channelListener.colorValueChanged(typeColorPair.getValue());
             }
         }
     }
 
     public Color getColor() {
-    	// XXX Color ist immutable, daher könnten sie ohne Probleme auch "return color" schreiben.
-        return new Color(color.getRed(), color.getGreen(), color.getBlue());
+    	return color; // This is o.k. since Color is immutable.
     }
 
-    public Map<rgbType, Integer> changedRgbTypes(Color oldColor, Color newColor) {
-    	// XXX hier würde sich ein EnumMap anbieten
-        Map<rgbType, Integer> changedTypes = new HashMap<>();
+    public EnumMap<RgbType, Integer> changedRgbTypes(Color oldColor, Color newColor) {
 
-        for (rgbType type : rgbType.values()) {
+        EnumMap<RgbType, Integer> changedTypes = new EnumMap<>(RgbType.class);
+
+        for (RgbType type : RgbType.values()) {
             if (getRgbTypeValue(oldColor, type) != getRgbTypeValue(newColor, type)) {
                 changedTypes.put(type, getRgbTypeValue(newColor, type));
             }
@@ -77,24 +104,24 @@ public class ColorModel {
         setColor(newColor);
     }
 
-    public void setColorComponent(int colorValue, rgbType componentType) {
-        if (componentType == rgbType.R) {
+    public void setColorComponent(int colorValue, RgbType componentType) {
+        if (componentType == RgbType.R) {
             setR(colorValue);
-        } else if (componentType == rgbType.G) {
+        } else if (componentType == RgbType.G) {
             setG(colorValue);
-        } else if (componentType == rgbType.B) {
+        } else if (componentType == RgbType.B) {
             setB(colorValue);
         } else {
             throw new IllegalArgumentException("Component type not valid rgbType.");
         }
     }
 
-    private int getRgbTypeValue(Color color, rgbType type) {
-        if (type == rgbType.R) {
+    private int getRgbTypeValue(Color color, RgbType type) {
+        if (type == RgbType.R) {
             return color.getRed();
-        } else if (type == rgbType.G) {
+        } else if (type == RgbType.G) {
             return color.getGreen();
-        } else if (type == rgbType.B) {
+        } else if (type == RgbType.B) {
             return color.getBlue();
         } else {
             throw new IllegalArgumentException("Component type not valid rgbType.");

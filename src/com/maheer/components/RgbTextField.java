@@ -7,11 +7,12 @@ import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings("serial")
 public class RgbTextField extends AbstractTextField {
 
     private List<TextFieldListener> listeners = new LinkedList<>();
 
-    public RgbTextField(ColorModel model, ColorModel.rgbType type, int colorValue) {
+    public RgbTextField(ColorModel model, ColorModel.RgbType type, int colorValue) {
         super(model, type, colorValue);
         setText(String.valueOf(Utility.truncateToBounds(colorValue)));
         addActionListener(this);
@@ -22,16 +23,16 @@ public class RgbTextField extends AbstractTextField {
     }
 
     @Override
-    public void colorValueChanged(int newColorVal, ColorModel.rgbType type) {
-        if (type == getType()) {
-            setColorValue(newColorVal);
-            setText(String.valueOf(newColorVal));
+    public void colorValueChanged(int newColorVal) {
 
-            for (TextFieldListener listener : listeners) {	// XXX habe das Gefühl dass das nicht nötig ist, das wird bereits durch das Textfeld gemacht.
-                listener.textFieldChanged(newColorVal);
-            }
+        setColorValue(newColorVal);
+        setText(String.valueOf(newColorVal));
+
+        for (TextFieldListener listener : listeners) {
+            listener.textFieldChanged(String.valueOf(newColorVal));
         }
     }
+  
 
     @Override
     public void actionPerformed(ActionEvent e) {

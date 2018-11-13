@@ -25,13 +25,13 @@ public class Utility {
         return colorValue;
     }
 
-    public static Color setColorComponent(Color color, ColorModel.rgbType type, int colorVal) {
+    public static Color setColorComponent(Color color, ColorModel.RgbType type, int colorVal) {
 
-        if (type == ColorModel.rgbType.R) {
+        if (type == ColorModel.RgbType.R) {
             return new Color(colorVal, color.getGreen(), color.getBlue());
-        } else if (type == ColorModel.rgbType.G) {
+        } else if (type == ColorModel.RgbType.G) {
             return new Color(color.getRed(), colorVal, color.getBlue());
-        } else if (type == ColorModel.rgbType.B) {
+        } else if (type == ColorModel.RgbType.B) {
             return new Color(color.getRed(), color.getGreen(), colorVal);
         } else {
             throw new IllegalArgumentException("Component type not valid rgbType.");

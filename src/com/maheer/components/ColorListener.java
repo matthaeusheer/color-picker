@@ -1,7 +1,7 @@
 package com.maheer.components;
 
-import com.maheer.colorpicker.ColorModel;
+import java.awt.Color;
 
 public interface ColorListener {
-    void colorValueChanged(int newColorVal, ColorModel.rgbType type);
+    void colorValueChanged(Color newColor);
 }
